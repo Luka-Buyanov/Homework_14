@@ -1,26 +1,28 @@
 class Product:
     name: str
     description: str
-    price: str
+    price: float
     quantity: int
 
-    def __init__ (self, name, description, price, quantity):
+    def __init__(self, name: str, description: str, price: float, quantity: int):
         self.name = name
         self.description = description
         self.price = price
         self.quantity = quantity
 
+
 class Category:
+
+    category_count = 0
+    product_count = 0
+
     name: str
     description: str
     products: list[object]
 
-    category_count = 0
-    products_count = 0
-
-    def __init__(self, name, description, products, category_count, products_count):
+    def __init__(self, name: str, description: str, products: list[object]):
         self.name = name
         self.description = description
         self.products = products
-        category_count += 1
-        products_count += len(products)
+        Category.category_count += 1
+        Category.product_count += len(products)
