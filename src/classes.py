@@ -27,7 +27,7 @@ class Category:
 
     name: str  # Название категории
     description: str  # Описание категории
-    products: list[Any]  # Список продуктов
+    __products: list[Any]  # Список продуктов
 
     def __init__(self, name: str, description: str, products: list[Any]):
         """Функция обеспечивающая наследование и общий подсчёт"""
@@ -37,3 +37,7 @@ class Category:
         self.products = products
         Category.category_count += 1
         Category.product_count += len(products)
+
+    @classmethod
+    def add_product(cls, product: Any) -> None:
+        cls.__products.append(product)
