@@ -6,7 +6,7 @@ class Product:
 
     name: str  # Название продукта
     description: str  # Описание продукта
-    price: float  # Цена продукта
+    price: float #Цена продукта
     quantity: int  # Количество продукта
 
     def __init__(self, name: str, description: str, price: float, quantity: int):
@@ -14,7 +14,7 @@ class Product:
 
         self.name = name
         self.description = description
-        self.price = price
+        self.__price = price
         self.quantity = quantity
 
     @classmethod
@@ -37,6 +37,21 @@ class Product:
         quantity = new_product["quantity"]
         return cls(name, description, price, quantity)
 
+    @property
+    def get_price(self) -> float:
+        return self.__price
+
+    @get_price.setter
+    def get_price(self, price: float) -> Any:
+        if price <= 0:
+            print("Цена не должна быть нулевая или отрицательная")
+        else:
+            if price < self.__price:
+                print("Вы хотите уменьшить цену? [y/n]")
+                answer = input()
+                if answer == "y":
+                    self.__price = price
+
 
 class Category:
     """Класс содержащий в себе одну категорию и её продукты, а также свойства: имя, описание, список продуктов.
@@ -45,7 +60,9 @@ class Category:
     category_count = 0  # Счётчик категорий
     product_count = 0  # Счётчик продуктов
 
-    products: str
+    name: str #Название класса
+    description: str #Описание класса
+    products: list[Any] #Список продуктов
 
     def __init__(self, name: str, description: str, products: list[Any]):
         """Функция обеспечивающая инициализацию и общий подсчёт"""
