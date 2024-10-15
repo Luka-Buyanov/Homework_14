@@ -17,6 +17,10 @@ class Product:
         self.price = price
         self.quantity = quantity
 
+    @property
+    def get_products(self) -> str:
+        return f"{self.name}, {self.price} руб. Остаток: {self.quantity} шт."
+
 
 class Category:
     """Класс содержащий в себе одну категорию и её продукты, а также свойства: имя, описание, список продуктов.
@@ -34,7 +38,7 @@ class Category:
 
         self.name = name
         self.description = description
-        self.products = products
+        self.get_products = products
         Category.category_count += 1
         Category.product_count += len(products)
 

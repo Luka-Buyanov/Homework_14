@@ -34,7 +34,7 @@ def test_category(category_add: Any) -> None:
 
     assert category_add.name == "Бананчики и Арбузики"
     assert category_add.description == "Много бананчиков и арбузиков"
-    assert category_add.products == [1, 2]
+    assert category_add.add_product == [1, 2]
 
 
 def test_counters(category_add: Any) -> None:
