@@ -9,7 +9,7 @@ class Product:
     quantity: int  # Количество продукта
 
     def __init__(self, name: str, description: str, price: float, quantity: int):
-        """Функция обеспечивающая инициализацию"""
+        """Метод обеспечивающий инициализацию"""
 
         self.name = name
         self.description = description
@@ -39,12 +39,12 @@ class Product:
         return cls(name, description, price, quantity)
 
     def __str__(self) -> str:
-        """Функция строкового представления класса"""
+        """Метод строкового представления класса"""
 
         return f"{self.name}, {self.price} руб. Остаток: {self.quantity} шт."
 
     def __add__(self, other: Any) -> Any:
-        """Функция реализующая сложение двух продуктов"""
+        """Метод реализующий сложение двух продуктов"""
 
         price_self = self.price
         quantity_self = self.quantity
@@ -83,7 +83,7 @@ class Category:
     description: str  # Описание класса
 
     def __init__(self, name: str, description: str, products: list[Any]):
-        """Функция обеспечивающая инициализацию и общий подсчёт"""
+        """Метод обеспечивающий инициализацию и общий подсчёт"""
 
         self.name = name
         self.description = description
@@ -92,7 +92,7 @@ class Category:
         Category.product_count += len(products)
 
     def __str__(self) -> str:
-        """Функция строкового представления класса, также выводящее общего количества товаров в категории"""
+        """Метод строкового представления класса, также выводящее общего количества товаров в категории"""
 
         quantity = 0
         for product in self.__products:
@@ -100,7 +100,7 @@ class Category:
         return f"{self.name}, количество продуктов: {quantity} шт."
 
     def add_product(self, product: Any) -> None:
-        """Модуль добавляющий новый продукт в категорию"""
+        """Метод добавляющий новый продукт в категорию"""
 
         self.__products.append(product)
         Category.product_count += 1
@@ -113,3 +113,39 @@ class Category:
         for product in self.__products:
             answer += str(product)
         return answer
+
+
+class Iterator:
+    """Класс позволяющий перебирать все товары данной категории"""
+
+    category: Any  # Категория по которой необходимо провести итерацию
+    _current_value: int  # Внутренняя переменная для проведения итерации
+
+    def __init__(self, categories: Any):
+        """Метод реализующий инициализацию"""
+
+        self.category = categories
+
+    def __iter__(self) -> Any:
+        """Метод реализующий итерацию класса"""
+
+        self._current_value = -1
+        return self
+
+    def __next__(self) -> Any:
+        """Метод реализующий переход к следующей итерации"""
+
+        answer = self.category.products.split("шт.")
+        answer.pop()
+        print(answer)
+        self._current_value += 1
+        if self._current_value <= len(answer) - 1:
+            return answer[self._current_value]
+        else:
+            raise StopIteration
+
+    def __len__(self) -> int:
+        """Метод реализующий вывод длины атрибута categories"""
+
+        categories = self.category
+        return len(categories.products)

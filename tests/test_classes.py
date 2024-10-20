@@ -2,7 +2,7 @@ from typing import Any
 
 import pytest
 
-from src.classes import Category, Product
+from src.classes import Category, Iterator, Product
 from src.reader import reader
 
 product1 = Product("Samsung Galaxy S23 Ultra", "256GB, Серый цвет, 200MP камера", 180000.0, 5)
@@ -160,3 +160,12 @@ def test_str_category(category_add: Any) -> None:
     """Тест проверяющий корректность вывода строкового представления категории"""
 
     assert str(category_add) == "Бананчики и Арбузики, количество продуктов: 13 шт."
+
+
+def test_iterator(category_add: Any) -> None:
+    """Тест проверяющий корректность работы итератора"""
+
+    answer = []
+    for i in Iterator(category_add):
+        answer.append(i)
+    assert answer == ["Samsung Galaxy S23 Ultra, 180000.0 руб. Остаток: 5 ", "Iphone 15, 210000.0 руб. Остаток: 8 "]
