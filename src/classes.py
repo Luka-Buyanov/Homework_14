@@ -43,6 +43,15 @@ class Product:
 
         return f"{self.name}, {self.price} руб. Остаток: {self.quantity} шт."
 
+    def __add__(self, other: Any) -> Any:
+        """Функция реализующая сложение двух продуктов"""
+
+        price_self = self.price
+        quantity_self = self.quantity
+        price_other = other.price
+        quantity_other = other.quantity
+        return price_self * quantity_self + price_other * quantity_other
+
     @property
     def price(self) -> float:
         """Геттер цены"""
