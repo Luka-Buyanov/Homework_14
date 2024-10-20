@@ -38,6 +38,11 @@ class Product:
         quantity = new_product["quantity"]
         return cls(name, description, price, quantity)
 
+    def __str__(self) -> str:
+        """Функция строкового представления класса"""
+
+        return f"{self.name}, {self.price} руб. Остаток: {self.quantity} шт."
+
     @property
     def price(self) -> float:
         """Геттер цены"""
@@ -77,6 +82,14 @@ class Category:
         Category.category_count += 1
         Category.product_count += len(products)
 
+    def __str__(self) -> str:
+        """Функция строкового представления класса, также выводящее общего количества товаров в категории"""
+
+        quantity = 0
+        for product in self.__products:
+            quantity += product.quantity
+        return f"{self.name}, количество продуктов: {quantity} шт."
+
     def add_product(self, product: Any) -> None:
         """Модуль добавляющий новый продукт в категорию"""
 
@@ -89,5 +102,5 @@ class Category:
 
         answer = ""
         for product in self.__products:
-            answer += f"{product.name}, {product.price} руб. Остаток: {product.quantity} шт.\n"
+            answer += str(product)
         return answer
