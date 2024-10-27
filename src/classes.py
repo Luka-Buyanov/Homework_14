@@ -46,11 +46,14 @@ class Product:
     def __add__(self, other: Any) -> Any:
         """Метод реализующий сложение двух продуктов"""
 
-        price_self = self.price
-        quantity_self = self.quantity
-        price_other = other.price
-        quantity_other = other.quantity
-        return price_self * quantity_self + price_other * quantity_other
+        if type(self) == type(other):
+            price_self = self.price
+            quantity_self = self.quantity
+            price_other = other.price
+            quantity_other = other.quantity
+            return price_self * quantity_self + price_other * quantity_other
+        else:
+            raise TypeError("Ошибка: классы продуктов не одинаковы! (Не складывайте траву со смартфонами!!!)")
 
     @property
     def price(self) -> float:
