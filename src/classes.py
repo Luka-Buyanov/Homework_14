@@ -158,6 +158,8 @@ class Iterator:
 
 
 class Smartphone(Product):
+    """Дочерний класс от Product, содержащий в себе информацию о смартфоне."""
+
     efficiency: float  # Эффективность смартфона
     model: str  # Модель смартфона
     memory: int  # Память смартфона в гигабайтах
@@ -174,6 +176,8 @@ class Smartphone(Product):
         memory: int,
         color: str,
     ):
+        """Метод обеспечивающий инициализацию"""
+
         super().__init__(name, description, price, quantity)
         self.efficiency = efficiency
         self.model = model
@@ -182,6 +186,8 @@ class Smartphone(Product):
 
 
 class LawnGrass(Product):
+    """Дочерний класс от Product, содержащий в себе информацию о траве для газона."""
+
     country: str  # Страна-производитель
     germination_period: str  # Срок прорастания
     color: str  # Цвет травы
@@ -196,6 +202,8 @@ class LawnGrass(Product):
         germination_period: str,
         color: str,
     ):
+        """Метод обеспечивающий инициализацию"""
+
         super().__init__(name, description, price, quantity)
         self.country = country
         self.germination_period = germination_period
