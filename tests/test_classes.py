@@ -2,7 +2,7 @@ from typing import Any
 
 import pytest
 
-from src.classes import Category, Product
+from src.classes import Category, Iterator, Product
 from src.reader import reader
 
 product1 = Product("Samsung Galaxy S23 Ultra", "256GB, Серый цвет, 200MP камера", 180000.0, 5)
@@ -39,7 +39,7 @@ def test_category(category_add: Any) -> None:
     assert category_add.name == "Бананчики и Арбузики"
     assert category_add.description == "Много бананчиков и арбузиков"
     assert category_add.products == (
-        "Samsung Galaxy S23 Ultra, 180000.0 руб. Остаток: 5 шт.\n" "Iphone 15, 210000.0 руб. Остаток: 8 шт.\n"
+        "Samsung Galaxy S23 Ultra, 180000.0 руб. Остаток: 5 шт.Iphone 15, 210000.0 " "руб. Остаток: 8 шт."
     )
 
 
@@ -83,9 +83,8 @@ def test_append_product(category_add: Any) -> None:
 
     category_add.add_product(product3)
     assert category_add.products == (
-        "Samsung Galaxy S23 Ultra, 180000.0 руб. Остаток: 5 шт.\n"
-        "Iphone 15, 210000.0 руб. Остаток: 8 шт.\n"
-        "Xiaomi Redmi Note 11, 31000.0 руб. Остаток: 14 шт.\n"
+        "Samsung Galaxy S23 Ultra, 180000.0 руб. Остаток: 5 шт.Iphone 15, 210000.0 "
+        "руб. Остаток: 8 шт.Xiaomi Redmi Note 11, 31000.0 руб. Остаток: 14 шт."
     )
 
 
@@ -143,3 +142,30 @@ def test_zero_price(capsys: Any) -> None:
     assert product1.price == 180000.0
     captured = capsys.readouterr()
     assert captured.out == "Цена не должна быть нулевая или отрицательная!\n"
+
+
+def test_add_products() -> None:
+    """Тест проверяющий корректность работы функции сложения двух продуктов"""
+
+    assert product1 + product2 == 2580000.0
+
+
+def test_str_product() -> None:
+    """Тест проверяющий корректность вывода строкового представления продукта"""
+
+    assert str(product1) == "Samsung Galaxy S23 Ultra, 180000.0 руб. Остаток: 5 шт."
+
+
+def test_str_category(category_add: Any) -> None:
+    """Тест проверяющий корректность вывода строкового представления категории"""
+
+    assert str(category_add) == "Бананчики и Арбузики, количество продуктов: 13 шт."
+
+
+def test_iterator(category_add: Any) -> None:
+    """Тест проверяющий корректность работы итератора"""
+
+    answer = []
+    for i in Iterator(category_add):
+        answer.append(i)
+    assert answer == ["Samsung Galaxy S23 Ultra, 180000.0 руб. Остаток: 5 ", "Iphone 15, 210000.0 руб. Остаток: 8 "]
