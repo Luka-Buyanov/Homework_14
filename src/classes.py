@@ -1,16 +1,37 @@
-from typing import Any, Optional
 from abc import ABC, abstractmethod
+from typing import Any, Optional
+
 
 class BaseProduct(ABC):
-    """Абстрактный класс. Определяет для классов метод price, можно использовать как сеттер и геттер цены"""
+    """Абстрактный класс. Определяет для классов метод new_product, необходим для создания нового продукта из словаря"""
 
     @abstractmethod
-    def price(self):
+    def new_product(self, new_product: dict, list_products: Optional[Any] = None) -> Any:
         """Метод для работы с ценой, как вариант геттер и сеттер"""
 
         pass
 
-class Product(BaseProduct):
+
+class MixinPrinter:
+    """Миксин для печати информации о продукте"""
+
+    name: str # Название продукта
+    description: str # Описание продукта
+    price: float # Цена продукта
+    quantity: int # Количество продукта
+
+    def __init__(self, *args: Any, **kwargs: Any):
+        """Метод обеспечивающий печать информации"""
+
+        print(repr(self))
+
+    def __repr__(self) -> str:
+        """Возврат информации о продукте в формате строки"""
+
+        return f"{self.__class__.__name__}('{self.name}', '{self.description}', '{self.price}', '{self.quantity}') "
+
+
+class Product(BaseProduct, MixinPrinter):
     """Класс содержащий в себе один продукт и его свойства: имя, описание, цену и количество"""
 
     name: str  # Название продукта
@@ -20,11 +41,11 @@ class Product(BaseProduct):
     def __init__(self, name: str, description: str, price: float, quantity: int):
         """Метод обеспечивающий инициализацию"""
 
-        super().__init__()
         self.name = name
         self.description = description
         self.__price = price
         self.quantity = quantity
+        super().__init__(name, description, price, quantity)
 
     @classmethod
     def new_product(cls, new_product: dict, list_products: Optional[Any] = None) -> Any:
