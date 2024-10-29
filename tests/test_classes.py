@@ -246,3 +246,9 @@ def test_category_counter(category_add: Any) -> None:
     """Тест счётчика товаров в классе category"""
 
     assert category_add.quantity_counter() == "В категории 13шт. товара"
+
+
+def test_order() -> None:
+    """Тест проверяющий работу вывода заказа в строковом формате"""
+
+    assert str(order1) == "Заказано: Samsung Galaxy S23 Ultra - 5шт. на сумму 900000.0руб."
