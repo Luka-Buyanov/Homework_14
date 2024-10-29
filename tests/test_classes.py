@@ -2,12 +2,23 @@ from typing import Any
 
 import pytest
 
-from src.classes import Category, Iterator, Product
+from src.classes import Category, Iterator, LawnGrass, Product, Smartphone
 from src.reader import reader
 
 product1 = Product("Samsung Galaxy S23 Ultra", "256GB, Серый цвет, 200MP камера", 180000.0, 5)
 product2 = Product("Iphone 15", "512GB, Gray space", 210000.0, 8)
 product3 = Product("Xiaomi Redmi Note 11", "1024GB, Синий", 31000.0, 14)
+
+smartphone1 = Smartphone(
+    "Samsung Galaxy S23 Ultra", "256GB, Серый цвет, 200MP камера", 180000.0, 5, 95.5, "S23 Ultra", 256, "Серый"
+)
+smartphone2 = Smartphone("Iphone 15", "512GB, Gray space", 210000.0, 8, 98.2, "15", 512, "Gray space")
+smartphone3 = Smartphone("Xiaomi Redmi Note 11", "1024GB, Синий", 31000.0, 14, 90.3, "Note 11", 1024, "Синий")
+
+grass1 = LawnGrass("Газонная трава", "Элитная трава для газона", 500.0, 20, "Россия", "7 дней", "Зеленый")
+grass2 = LawnGrass("Газонная трава 2", "Выносливая трава", 450.0, 15, "США", "5 дней", "Темно-зеленый")
+
+category_smartphones = Category("Смартфоны", "Высокотехнологичные смартфоны", [smartphone1, smartphone2])
 
 
 @pytest.fixture
@@ -46,8 +57,8 @@ def test_category(category_add: Any) -> None:
 def test_counters(category_add: Any) -> None:
     """Тест проверяющий корректную работу счётчиков в классе Category"""
 
-    assert category_add.category_count == 2
-    assert category_add.product_count == 4
+    assert category_add.category_count == 3
+    assert category_add.product_count == 6
 
 
 def test_file_read_1() -> None:
@@ -74,8 +85,8 @@ def test_file_read_counter() -> None:
     """Тест проверяющий корректную работу счётчиков в классе Category после всех операций"""
 
     category_3 = reader()[1]
-    assert category_3.category_count == 8
-    assert category_3.product_count == 16
+    assert category_3.category_count == 9
+    assert category_3.product_count == 18
 
 
 def test_append_product(category_add: Any) -> None:
@@ -169,3 +180,44 @@ def test_iterator(category_add: Any) -> None:
     for i in Iterator(category_add):
         answer.append(i)
     assert answer == ["Samsung Galaxy S23 Ultra, 180000.0 руб. Остаток: 5 ", "Iphone 15, 210000.0 руб. Остаток: 8 "]
+
+
+def test_addition_not_same_classes() -> None:
+    """Тест сложения объектов разных типов (смартфонов с травой)"""
+
+    with pytest.raises(TypeError) as error:
+        smartphone1 + grass1
+    assert str(error.value) == "Ошибка: классы продуктов не одинаковы! (Не складывайте траву со " "смартфонами!!!)"
+
+
+def test_add_not_product() -> None:
+    """Тест добавления в категорию объекта не являющегося продуктом"""
+
+    with pytest.raises(TypeError) as error:
+        category_smartphones.add_product("Not a product")
+    assert str(error.value) == "Нельзя добавлять в категории не продукты!"
+
+
+def test_smartphone() -> None:
+    """Тест корректной инициализации класса Smartphone"""
+
+    assert smartphone1.name == "Samsung Galaxy S23 Ultra"
+    assert smartphone1.description == "256GB, Серый цвет, 200MP камера"
+    assert smartphone1.quantity == 5
+    assert smartphone1.price == 180000.0
+    assert smartphone1.memory == 256
+    assert smartphone1.color == "Серый"
+    assert smartphone1.model == "S23 Ultra"
+    assert smartphone1.efficiency == 95.5
+
+
+def test_grass() -> None:
+    """Тест корректной инициализации класса Grass"""
+
+    assert grass1.name == "Газонная трава"
+    assert grass1.description == "Элитная трава для газона"
+    assert grass1.price == 500.0
+    assert grass1.quantity == 20
+    assert grass1.country == "Россия"
+    assert grass1.germination_period == "7 дней"
+    assert grass1.color == "Зеленый"

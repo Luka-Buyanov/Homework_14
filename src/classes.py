@@ -46,11 +46,14 @@ class Product:
     def __add__(self, other: Any) -> Any:
         """Метод реализующий сложение двух продуктов"""
 
-        price_self = self.price
-        quantity_self = self.quantity
-        price_other = other.price
-        quantity_other = other.quantity
-        return price_self * quantity_self + price_other * quantity_other
+        if type(self) == type(other):
+            price_self = self.price
+            quantity_self = self.quantity
+            price_other = other.price
+            quantity_other = other.quantity
+            return price_self * quantity_self + price_other * quantity_other
+        else:
+            raise TypeError("Ошибка: классы продуктов не одинаковы! (Не складывайте траву со смартфонами!!!)")
 
     @property
     def price(self) -> float:
@@ -102,8 +105,11 @@ class Category:
     def add_product(self, product: Any) -> None:
         """Метод добавляющий новый продукт в категорию"""
 
-        self.__products.append(product)
-        Category.product_count += 1
+        if isinstance(product, Product):
+            self.__products.append(product)
+            Category.product_count += 1
+        else:
+            raise TypeError("Нельзя добавлять в категории не продукты!")
 
     @property
     def products(self) -> str:
@@ -149,3 +155,56 @@ class Iterator:
 
         categories = self.category
         return len(categories.products)
+
+
+class Smartphone(Product):
+    """Дочерний класс от Product, содержащий в себе информацию о смартфоне."""
+
+    efficiency: float  # Эффективность смартфона
+    model: str  # Модель смартфона
+    memory: int  # Память смартфона в гигабайтах
+    color: str  # Цвет смартфона
+
+    def __init__(
+        self,
+        name: str,
+        description: str,
+        price: float,
+        quantity: int,
+        efficiency: float,
+        model: str,
+        memory: int,
+        color: str,
+    ):
+        """Метод обеспечивающий инициализацию"""
+
+        super().__init__(name, description, price, quantity)
+        self.efficiency = efficiency
+        self.model = model
+        self.memory = memory
+        self.color = color
+
+
+class LawnGrass(Product):
+    """Дочерний класс от Product, содержащий в себе информацию о траве для газона."""
+
+    country: str  # Страна-производитель
+    germination_period: str  # Срок прорастания
+    color: str  # Цвет травы
+
+    def __init__(
+        self,
+        name: str,
+        description: str,
+        price: float,
+        quantity: int,
+        country: str,
+        germination_period: str,
+        color: str,
+    ):
+        """Метод обеспечивающий инициализацию"""
+
+        super().__init__(name, description, price, quantity)
+        self.country = country
+        self.germination_period = germination_period
+        self.color = color
