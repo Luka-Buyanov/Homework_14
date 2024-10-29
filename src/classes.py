@@ -1,7 +1,16 @@
 from typing import Any, Optional
+from abc import ABC, abstractmethod
 
+class BaseProduct(ABC):
+    """Абстрактный класс. Определяет для классов метод price, можно использовать как сеттер и геттер цены"""
 
-class Product:
+    @abstractmethod
+    def price(self):
+        """Метод для работы с ценой, как вариант геттер и сеттер"""
+
+        pass
+
+class Product(BaseProduct):
     """Класс содержащий в себе один продукт и его свойства: имя, описание, цену и количество"""
 
     name: str  # Название продукта
@@ -11,6 +20,7 @@ class Product:
     def __init__(self, name: str, description: str, price: float, quantity: int):
         """Метод обеспечивающий инициализацию"""
 
+        super().__init__()
         self.name = name
         self.description = description
         self.__price = price
