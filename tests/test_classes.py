@@ -25,6 +25,8 @@ category_smartphones = Category("Смартфоны", "Высокотехнол�
 
 order1 = Order(smartphone4, 5)
 
+category_empty = Category("Пустая категория", "Категория без продуктов", [])
+
 
 @pytest.fixture
 def category_add() -> Any:
@@ -62,7 +64,7 @@ def test_category(category_add: Any) -> None:
 def test_counters(category_add: Any) -> None:
     """Тест проверяющий корректную работу счётчиков в классе Category"""
 
-    assert category_add.category_count == 3
+    assert category_add.category_count == 4
     assert category_add.product_count == 6
 
 
@@ -90,7 +92,7 @@ def test_file_read_counter() -> None:
     """Тест проверяющий корректную работу счётчиков в классе Category после всех операций"""
 
     category_3 = reader()[1]
-    assert category_3.category_count == 9
+    assert category_3.category_count == 10
     assert category_3.product_count == 18
 
 
@@ -252,3 +254,22 @@ def test_order() -> None:
     """Тест проверяющий работу вывода заказа в строковом формате"""
 
     assert str(order1) == "Заказано: Samsung Galaxy S23 Ultra - 5шт. на сумму 900000.0руб."
+
+
+def test_zero_quantity_product() -> None:
+    """Тест проверяющий инициализацию продукта  с нулевым количеством"""
+
+    with pytest.raises(ValueError, match="Товар с нулевым количеством не может быть добавлен!"):
+        Product("Бракованный товар", "Неверное количество", 1000.0, 0)
+
+
+def test_zero_category_products() -> None:
+    """Тест проверяющий подсчёт средней цены при нулевом количестве товаров"""
+
+    assert category_empty.middle_price() == 0
+
+
+def test_category_middle_price() -> None:
+    """Тест проверяющий подсчёт средней цены"""
+
+    assert category_smartphones.middle_price() == "Средняя цена товаров в категории: 30000.0руб."
