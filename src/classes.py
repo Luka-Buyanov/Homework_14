@@ -172,6 +172,22 @@ class Category(BaseCategory):
             quantity_summ += products.quantity
         return f"В категории {quantity_summ}шт. товара"
 
+    def middle_price(self) -> Any:
+        """Метод подсчёта средней цены всех товаров в категории"""
+
+        price_summ = 0
+        str_quantity = self.quantity_counter()
+        index = str_quantity.find("шт.")
+        quantity = int(str_quantity[12:index])
+        try:
+            for products in self.__products:
+                price_summ += products.price
+            middle_price = price_summ / quantity
+        except ZeroDivisionError:
+            return 0
+        else:
+            return f"Средняя цена товаров в категории: {middle_price}руб."
+
 
 class Iterator:
     """Класс позволяющий перебирать все товары данной категории"""
