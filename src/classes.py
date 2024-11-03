@@ -149,11 +149,22 @@ class Category(BaseCategory):
     def add_product(self, product: Any) -> None:
         """Метод добавляющий новый продукт в категорию"""
 
-        if isinstance(product, Product):
-            self.__products.append(product)
-            Category.product_count += 1
-        else:
+        try:
+            quantity = product.quantity
+            1 / quantity
+        except ZeroDivisionError:
+            raise ZeroQuantityAddError()
+        except AttributeError:
             raise TypeError("Нельзя добавлять в категории не продукты!")
+        else:
+            print("Добавлен новый товар в категорию!")
+            if isinstance(product, Product):
+                self.__products.append(product)
+                Category.product_count += 1
+            else:
+                raise TypeError("Нельзя добавлять в категории не продукты!")
+        finally:
+            print("Обработка добавления товара завершена.")
 
     @property
     def products(self) -> str:
@@ -289,9 +300,19 @@ class Order(BaseCategory):
         """Метод обеспечивающий инициализацию"""
 
         self.product = product
-        self.quantity = buy_quantity
-        self.summ = buy_quantity * self.product.price
-        self.product.quantity -= buy_quantity
+        try:
+            quantity = product.quantity
+            1 / quantity
+        except ZeroDivisionError:
+            raise ZeroQuantityAddError()
+        except AttributeError:
+            raise TypeError("Нельзя добавлять в заказ не продукты!")
+        else:
+            print("Товар добавлен в заказ!")
+            self.quantity = buy_quantity
+            self.summ = buy_quantity * self.product.price
+            self.product.quantity -= buy_quantity
+            print("Обработка добавления товара завершена.")
 
     def __str__(self) -> str:
         """Метод выводящий строковое представление заказа"""
@@ -302,3 +323,17 @@ class Order(BaseCategory):
         """Метод выводящий количество товара."""
 
         return f"Заказано {self.quantity}шт. товара."
+
+
+class ZeroQuantityAddError(Exception):
+    """Класс выводящий ошибку при добавлении товара с нулевым количеством"""
+
+    def __init__(self) -> None:
+        """Метод обеспечивающий инициализацию и проверку условия"""
+
+        self.end_message = "Нельзя добавлять товары с нулевым количеством!"
+
+    def __str__(self) -> Any:
+        """Метод выводящий строковое представление результата добавления"""
+
+        return self.end_message
