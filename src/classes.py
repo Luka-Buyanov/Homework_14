@@ -1,7 +1,47 @@
+from abc import ABC, abstractmethod
 from typing import Any, Optional
 
 
-class Product:
+class BaseCategory(ABC):
+    """Абстрактный класс. Определяет для классов метод подсчёта количества продуктов"""
+
+    @abstractmethod
+    def quantity_counter(self, *args: Any, **kwargs: Any) -> str:
+        """Метод реализующий подсчёт товаров в категории или продукте"""
+
+        pass
+
+
+class BaseProduct(ABC):
+    """Абстрактный класс. Определяет для классов метод new_product, необходим для создания продукта из словаря"""
+
+    @abstractmethod
+    def new_product(self, *args: Any, **kwargs: Any) -> Any:
+        """Метод для работы с ценой, как вариант геттер и сеттер"""
+
+        pass
+
+
+class MixinPrinter:
+    """Миксин для печати информации о продукте"""
+
+    name: str  # Название продукта
+    description: str  # Описание продукта
+    price: float  # Цена продукта
+    quantity: int  # Количество продукта
+
+    def __init__(self, *args: Any, **kwargs: Any):
+        """Метод обеспечивающий печать информации"""
+
+        print(repr(self))
+
+    def __repr__(self) -> str:
+        """Возврат информации о продукте в формате строки"""
+
+        return f"{self.__class__.__name__}('{self.name}', '{self.description}', '{self.price}', '{self.quantity}') "
+
+
+class Product(BaseProduct, MixinPrinter):
     """Класс содержащий в себе один продукт и его свойства: имя, описание, цену и количество"""
 
     name: str  # Название продукта
@@ -15,6 +55,7 @@ class Product:
         self.description = description
         self.__price = price
         self.quantity = quantity
+        super().__init__(name, description, price, quantity)
 
     @classmethod
     def new_product(cls, new_product: dict, list_products: Optional[Any] = None) -> Any:
@@ -75,7 +116,7 @@ class Product:
                     self.__price = price
 
 
-class Category:
+class Category(BaseCategory):
     """Класс содержащий в себе одну категорию и её продукты, а также свойства: имя, описание, список продуктов.
     Дополнительно содержит подсчёт всех категорий и всех продуктов в них."""
 
@@ -119,6 +160,14 @@ class Category:
         for product in self.__products:
             answer += str(product)
         return answer
+
+    def quantity_counter(self) -> str:
+        """Метод выводящий количество товара."""
+
+        quantity_summ = 0
+        for products in self.__products:
+            quantity_summ += products.quantity
+        return f"В категории {quantity_summ}шт. товара"
 
 
 class Iterator:
@@ -208,3 +257,29 @@ class LawnGrass(Product):
         self.country = country
         self.germination_period = germination_period
         self.color = color
+
+
+class Order(BaseCategory):
+    """Класс содержащий информацию о заказе."""
+
+    product: Product  # Заказанный продукт
+    quantity: int  # Количество заказанного продукта
+    summ: float  # Сумма заказа
+
+    def __init__(self, product: Product, buy_quantity: int):
+        """Метод обеспечивающий инициализацию"""
+
+        self.product = product
+        self.quantity = buy_quantity
+        self.summ = buy_quantity * self.product.price
+        self.product.quantity -= buy_quantity
+
+    def __str__(self) -> str:
+        """Метод выводящий строковое представление заказа"""
+
+        return f"Заказано: {self.product.name} - {self.quantity}шт. на сумму {self.summ}руб."
+
+    def quantity_counter(self) -> str:
+        """Метод выводящий количество товара."""
+
+        return f"Заказано {self.quantity}шт. товара."
