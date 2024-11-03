@@ -51,11 +51,14 @@ class Product(BaseProduct, MixinPrinter):
     def __init__(self, name: str, description: str, price: float, quantity: int):
         """Метод обеспечивающий инициализацию"""
 
-        self.name = name
-        self.description = description
-        self.__price = price
-        self.quantity = quantity
-        super().__init__(name, description, price, quantity)
+        if quantity == 0:
+            raise ValueError("Товар с нулевым количеством не может быть добавлен!")
+        else:
+            self.name = name
+            self.description = description
+            self.__price = price
+            self.quantity = quantity
+            super().__init__(name, description, price, quantity)
 
     @classmethod
     def new_product(cls, new_product: dict, list_products: Optional[Any] = None) -> Any:
