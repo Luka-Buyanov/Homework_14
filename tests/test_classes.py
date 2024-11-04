@@ -15,7 +15,7 @@ smartphone1 = Smartphone(
 smartphone2 = Smartphone("Iphone 15", "512GB, Gray space", 210000.0, 8, 98.2, "15", 512, "Gray space")
 smartphone3 = Smartphone("Xiaomi Redmi Note 11", "1024GB, Синий", 31000.0, 14, 90.3, "Note 11", 1024, "Синий")
 smartphone4 = Smartphone(
-    "Samsung Galaxy S23 Ultra", "256GB, Серый цвет, 200MP камера", 180000.0, 5, 95.5, "S23 Ultra", 256, "Серый"
+    "Samsung Galaxy S23 Ultra", "256GB, Серый цвет, 200MP камера", 180000.0, 10, 95.5, "S23 Ultra", 256, "Серый"
 )
 
 grass1 = LawnGrass("Газонная трава", "Элитная трава для газона", 500.0, 20, "Россия", "7 дней", "Зеленый")
@@ -24,6 +24,8 @@ grass2 = LawnGrass("Газонная трава 2", "Выносливая тра
 category_smartphones = Category("Смартфоны", "Высокотехнологичные смартфоны", [smartphone1, smartphone2])
 
 order1 = Order(smartphone4, 5)
+
+category_empty = Category("Пустая категория", "Категория без продуктов", [])
 
 
 @pytest.fixture
@@ -62,7 +64,7 @@ def test_category(category_add: Any) -> None:
 def test_counters(category_add: Any) -> None:
     """Тест проверяющий корректную работу счётчиков в классе Category"""
 
-    assert category_add.category_count == 3
+    assert category_add.category_count == 4
     assert category_add.product_count == 6
 
 
@@ -90,18 +92,20 @@ def test_file_read_counter() -> None:
     """Тест проверяющий корректную работу счётчиков в классе Category после всех операций"""
 
     category_3 = reader()[1]
-    assert category_3.category_count == 9
+    assert category_3.category_count == 10
     assert category_3.product_count == 18
 
 
-def test_append_product(category_add: Any) -> None:
-    """Тест проверяющий функцию добавления нового продукта в категорию"""
+def test_append_product(category_add: Any, capsys: Any) -> None:
+    """Тест проверяющий функцию добавления нового продукта в категорию и проверяющий выводы в консоль"""
 
     category_add.add_product(product3)
     assert category_add.products == (
         "Samsung Galaxy S23 Ultra, 180000.0 руб. Остаток: 5 шт.Iphone 15, 210000.0 "
         "руб. Остаток: 8 шт.Xiaomi Redmi Note 11, 31000.0 руб. Остаток: 14 шт."
     )
+    captured = capsys.readouterr()
+    assert captured.out == "Добавлен новый товар в категорию!\nОбработка добавления товара завершена.\n"
 
 
 def test_new_product() -> None:
@@ -248,7 +252,29 @@ def test_category_counter(category_add: Any) -> None:
     assert category_add.quantity_counter() == "В категории 13шт. товара"
 
 
-def test_order() -> None:
-    """Тест проверяющий работу вывода заказа в строковом формате"""
+def test_order(capsys: Any) -> None:
+    """Тест проверяющий работу вывода заказа в строковом формате и проверяющий выводы в консоль"""
 
+    order1 = Order(smartphone4, 5)
     assert str(order1) == "Заказано: Samsung Galaxy S23 Ultra - 5шт. на сумму 900000.0руб."
+    captured = capsys.readouterr()
+    assert captured.out == "Товар добавлен в заказ!\nОбработка добавления товара завершена.\n"
+
+
+def test_zero_quantity_product() -> None:
+    """Тест проверяющий инициализацию продукта с нулевым количеством"""
+
+    with pytest.raises(ValueError, match="Товар с нулевым количеством не может быть добавлен!"):
+        Product("Бракованный товар", "Неверное количество", 1000.0, 0)
+
+
+def test_zero_category_products() -> None:
+    """Тест проверяющий подсчёт средней цены при нулевом количестве товаров"""
+
+    assert category_empty.middle_price() == 0
+
+
+def test_category_middle_price() -> None:
+    """Тест проверяющий подсчёт средней цены"""
+
+    assert category_smartphones.middle_price() == "Средняя цена товаров в категории: 30000.0руб."
